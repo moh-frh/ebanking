@@ -141,11 +141,14 @@ public class BankAccountServiceImpl implements BankAccountService{
         if(bankAccountSource.getBalance() < amount){
             throw new BalanceNotSufficentException("balance to transfer not sufficient in source account");
         }
-
         debit(accountIdSource, amount, "debit-transaction to: "+accountIdDestination);
         credit(accountIdDestination, amount, "credit-transaction from: "+accountIdSource);
-
-
-
     }
+
+    @Override
+    public List<BankAccount> bankAccountList() {
+        return bankAccountRepository.findAll();
+    }
+
+
 }
