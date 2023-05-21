@@ -1,11 +1,11 @@
 package org.frh.ebankingbackend.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.frh.ebankingbackend.entity.BankAccount;
-import org.frh.ebankingbackend.entity.CurrentAccount;
-import org.frh.ebankingbackend.entity.Customer;
-import org.frh.ebankingbackend.entity.SavingAccount;
+import org.frh.ebankingbackend.entity.*;
 import org.frh.ebankingbackend.enums.AccountStatus;
+import org.frh.ebankingbackend.enums.OperationType;
+import org.frh.ebankingbackend.exception.BalanceNotSufficentException;
+import org.frh.ebankingbackend.exception.BankAccountException;
 import org.frh.ebankingbackend.exception.CustomerNotFoundException;
 import org.frh.ebankingbackend.repository.AccountOperationRepository;
 import org.frh.ebankingbackend.repository.BankAccountRepository;
@@ -87,26 +87,65 @@ public class BankAccountServiceImpl implements BankAccountService{
 
     @Override
     public List<Customer> listCustomers() {
-        return null;
+        return customerRepository.findAll();
     }
 
     @Override
-    public BankAccount getBankAccount(String AccountId) {
-        return null;
+    public BankAccount getBankAccount(String AccountId) throws BankAccountException {
+        BankAccount bankAccount =  bankAccountRepository.findById(AccountId)
+                .orElseThrow(()->new BankAccountException("bank account not found"));
+
+        return bankAccount;
     }
 
     @Override
-    public void debit(String accountId, double amount, String description) {
+    public void debit(String accountId, double amount, String description) throws BankAccountException, BalanceNotSufficentException {
+        BankAccount bankAccount = getBankAccount(accountId);
+        if(bankAccount.getBalance() < amount){
+            throw new BalanceNotSufficentException("solde not sufficiient");
+        }
+        AccountOperation accountOperation = new AccountOperation();
+        accountOperation.setType(OperationType.DEBIT);
+        accountOperation.setAmount(amount);
+        accountOperation.setDescription(description);
+        accountOperation.setDate(new Date());
+        accountOperation.setBankAccount(bankAccount);
+        accountOperationRepository.save(accountOperation);
 
+        //update the new bank account balance
+        bankAccount.setBalance(bankAccount.getBalance());
+        bankAccountRepository.save(bankAccount);
     }
 
     @Override
-    public void credit(String accountId, double amount, String description) {
+    public void credit(String accountId, double amount, String description) throws BankAccountException {
+        BankAccount bankAccount = getBankAccount(accountId);
 
+        AccountOperation accountOperation = new AccountOperation();
+        accountOperation.setType(OperationType.CREDIT);
+        accountOperation.setAmount(amount);
+        accountOperation.setDescription(description);
+        accountOperation.setDate(new Date());
+        accountOperation.setBankAccount(bankAccount);
+        accountOperationRepository.save(accountOperation);
+
+        //update the new bank account balance
+        bankAccount.setBalance(bankAccount.getBalance() + amount);
+        bankAccountRepository.save(bankAccount);
     }
 
     @Override
-    public void transfer(String accountIdSource, String accountIdDestination, double amount) {
+    public void transfer(String accountIdSource, String accountIdDestination, double amount) throws BalanceNotSufficentException, BankAccountException {
+
+        BankAccount bankAccountSource = bankAccountRepository.findById(accountIdSource).orElse(null);
+        if(bankAccountSource.getBalance() < amount){
+            throw new BalanceNotSufficentException("balance to transfer not sufficient in source account");
+        }
+
+        debit(accountIdSource, amount, "debit-transaction to: "+accountIdDestination);
+        credit(accountIdDestination, amount, "credit-transaction from: "+accountIdSource);
+
+
 
     }
 }
