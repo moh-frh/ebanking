@@ -1,5 +1,6 @@
 package org.frh.ebankingbackend;
 
+import org.frh.ebankingbackend.dto.CustomerDTO;
 import org.frh.ebankingbackend.entity.*;
 import org.frh.ebankingbackend.enums.AccountStatus;
 import org.frh.ebankingbackend.enums.OperationType;
@@ -35,11 +36,11 @@ public class EbankingBackendApplication {
             Stream.of("mohamed", "fouaz", "adem").forEach(cus ->{
                 Customer customer = new Customer();
                 customer.setName(cus);
-                customer.setEmail(cus+"gmail.com");
+                customer.setEmail(cus+"@gmail.com");
                 bankAccountService.saveCustomer(customer);
             });
 
-            List<Customer> listCustomers = bankAccountService.listCustomers();
+            List<CustomerDTO> listCustomers = bankAccountService.listCustomers();
             listCustomers.forEach(cus -> {
                 try {
                     bankAccountService.saveCurrentBankAccount(Math.random()*90000, 9000, cus.getId());

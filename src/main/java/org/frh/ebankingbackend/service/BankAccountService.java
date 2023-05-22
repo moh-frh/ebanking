@@ -1,5 +1,6 @@
 package org.frh.ebankingbackend.service;
 
+import org.frh.ebankingbackend.dto.CustomerDTO;
 import org.frh.ebankingbackend.entity.BankAccount;
 import org.frh.ebankingbackend.entity.CurrentAccount;
 import org.frh.ebankingbackend.entity.Customer;
@@ -14,7 +15,7 @@ public interface BankAccountService {
     Customer saveCustomer(Customer customer);
     CurrentAccount saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException;
     SavingAccount saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
-    List<Customer> listCustomers();
+    List<CustomerDTO> listCustomers();
     BankAccount getBankAccount(String AccountId) throws BankAccountException;
     void debit(String accountId, double amount, String description) throws BankAccountException, BalanceNotSufficentException;
     void credit(String accountId, double amount, String description) throws BankAccountException, BalanceNotSufficentException;
