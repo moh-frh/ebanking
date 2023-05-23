@@ -10,7 +10,7 @@ public class BankAccountMapperImpl {
     public CustomerDTO fromCustomer(Customer customer){
         CustomerDTO customerDTO = new CustomerDTO();
 
-        // method 1
+        // method : 1
         //customerDTO.setId(customer.getId());
         //customerDTO.setName(customer.getName());
         //customerDTO.setEmail(customer.getEmail());
