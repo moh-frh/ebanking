@@ -12,8 +12,6 @@ import org.frh.ebankingbackend.mapper.BankAccountMapperImpl;
 import org.frh.ebankingbackend.repository.AccountOperationRepository;
 import org.frh.ebankingbackend.repository.BankAccountRepository;
 import org.frh.ebankingbackend.repository.CustomerRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -43,10 +40,11 @@ public class BankAccountServiceImpl implements BankAccountService{
         this.dtoMapper = dtoMapper;
     }
     @Override
-    public Customer saveCustomer(Customer customer) {
+    public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
         log.info("saving new customer !!");
+        Customer customer = dtoMapper.fromCustomerDTO(customerDTO);
         Customer savedCustomer = customerRepository.save(customer);
-        return savedCustomer;
+        return dtoMapper.fromCustomer(savedCustomer);
     }
 
     @Override
@@ -105,6 +103,25 @@ public class BankAccountServiceImpl implements BankAccountService{
             customerDTOS.add(customerDTO);
         }
         return customerDTOS;
+    }
+
+    @Override
+    public CustomerDTO getCustomerById(Long id) throws CustomerNotFoundException {
+        Customer customer = customerRepository.findById(id).orElseThrow(()->new CustomerNotFoundException("customer not found"));
+        return dtoMapper.fromCustomer(customer);
+    }
+
+    @Override
+    public CustomerDTO updateCustomer(CustomerDTO customerDTO) {
+        log.info("saving new customer !!");
+        Customer customer = dtoMapper.fromCustomerDTO(customerDTO);
+        Customer savedCustomer = customerRepository.save(customer);
+        return dtoMapper.fromCustomer(savedCustomer);
+    }
+
+    @Override
+    public void deleteCustomer(Long id){
+        customerRepository.deleteById(id);
     }
 
     @Override

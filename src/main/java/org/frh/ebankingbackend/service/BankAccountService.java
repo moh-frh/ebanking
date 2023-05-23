@@ -12,10 +12,16 @@ import org.frh.ebankingbackend.exception.CustomerNotFoundException;
 import java.util.List;
 
 public interface BankAccountService {
-    Customer saveCustomer(Customer customer);
+    CustomerDTO saveCustomer(CustomerDTO customerDTO);
     CurrentAccount saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException;
     SavingAccount saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
     List<CustomerDTO> listCustomers();
+    CustomerDTO getCustomerById(Long id) throws CustomerNotFoundException;
+
+    CustomerDTO updateCustomer(CustomerDTO customerDTO);
+
+    void deleteCustomer(Long id);
+
     BankAccount getBankAccount(String AccountId) throws BankAccountException;
     void debit(String accountId, double amount, String description) throws BankAccountException, BalanceNotSufficentException;
     void credit(String accountId, double amount, String description) throws BankAccountException, BalanceNotSufficentException;
