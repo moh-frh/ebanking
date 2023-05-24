@@ -1,6 +1,8 @@
 package org.frh.ebankingbackend;
 
+import org.frh.ebankingbackend.dto.CurrentBankAccountDTO;
 import org.frh.ebankingbackend.dto.CustomerDTO;
+import org.frh.ebankingbackend.dto.SavingBankAccountDTO;
 import org.frh.ebankingbackend.entity.*;
 import org.frh.ebankingbackend.enums.AccountStatus;
 import org.frh.ebankingbackend.enums.OperationType;
@@ -57,9 +59,15 @@ public class EbankingBackendApplication {
             });
             bankAccountService.bankAccountList().forEach(account -> {
                 for(int i=0; i<10; i++){
+                    String accountId;
+                    if(account instanceof SavingBankAccountDTO){
+                        accountId = ((SavingBankAccountDTO) account).getId();
+                    }else{
+                        accountId = ((CurrentBankAccountDTO) account).getId();
+                    }
                     try {
-                        bankAccountService.credit(account.getId(), 100+Math.random()*900, "credit");
-                        bankAccountService.debit(account.getId(), 10+Math.random()*90, "credit");
+                        bankAccountService.credit(accountId, 100+Math.random()*900, "credit");
+                        bankAccountService.debit(accountId, 10+Math.random()*90, "credit");
                     } catch (BankAccountException e) {
                         e.printStackTrace();
                     } catch (BalanceNotSufficentException e) {

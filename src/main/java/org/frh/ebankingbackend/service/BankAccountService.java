@@ -1,6 +1,9 @@
 package org.frh.ebankingbackend.service;
 
+import org.frh.ebankingbackend.dto.BankAccountDTO;
+import org.frh.ebankingbackend.dto.CurrentBankAccountDTO;
 import org.frh.ebankingbackend.dto.CustomerDTO;
+import org.frh.ebankingbackend.dto.SavingBankAccountDTO;
 import org.frh.ebankingbackend.entity.BankAccount;
 import org.frh.ebankingbackend.entity.CurrentAccount;
 import org.frh.ebankingbackend.entity.Customer;
@@ -13,8 +16,8 @@ import java.util.List;
 
 public interface BankAccountService {
     CustomerDTO saveCustomer(CustomerDTO customerDTO);
-    CurrentAccount saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException;
-    SavingAccount saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
+    CurrentBankAccountDTO saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException;
+    SavingBankAccountDTO saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
     List<CustomerDTO> listCustomers();
     CustomerDTO getCustomerById(Long id) throws CustomerNotFoundException;
 
@@ -22,10 +25,10 @@ public interface BankAccountService {
 
     void deleteCustomer(Long id);
 
-    BankAccount getBankAccount(String AccountId) throws BankAccountException;
+    BankAccountDTO getBankAccount(String AccountId) throws BankAccountException;
     void debit(String accountId, double amount, String description) throws BankAccountException, BalanceNotSufficentException;
     void credit(String accountId, double amount, String description) throws BankAccountException, BalanceNotSufficentException;
     void transfer(String accountIdSource, String accountIdDestination, double amount) throws BalanceNotSufficentException, BankAccountException;
-    List<BankAccount> bankAccountList();
+    List<BankAccountDTO> bankAccountList();
 
 }
