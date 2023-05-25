@@ -1,9 +1,6 @@
 package org.frh.ebankingbackend.service;
 
-import org.frh.ebankingbackend.dto.BankAccountDTO;
-import org.frh.ebankingbackend.dto.CurrentBankAccountDTO;
-import org.frh.ebankingbackend.dto.CustomerDTO;
-import org.frh.ebankingbackend.dto.SavingBankAccountDTO;
+import org.frh.ebankingbackend.dto.*;
 import org.frh.ebankingbackend.entity.BankAccount;
 import org.frh.ebankingbackend.entity.CurrentAccount;
 import org.frh.ebankingbackend.entity.Customer;
@@ -31,4 +28,7 @@ public interface BankAccountService {
     void transfer(String accountIdSource, String accountIdDestination, double amount) throws BalanceNotSufficentException, BankAccountException;
     List<BankAccountDTO> bankAccountList();
 
+    List<AccountOperationDTO> accountHistory(String accountId);
+
+    AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountException;
 }
